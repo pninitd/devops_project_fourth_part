@@ -3,13 +3,18 @@ pipeline {
 	options {
 		buildDiscarder(logRotator(numToKeepStr: '20', daysToKeepStr: '5'))
 	}
+	environment {
+        registry = "pninit/devops_project_fourth_part"
+        registryCredential = 'docker_hub'
+        dockerImage = ''
+    }
 	stages {
 		stage('checkout') {
 			steps {
 				script {
 					properties([pipelineTriggers([pollSCM('*/30 * * * *')])])
 				}
-                // checkout from the url that defined in the jenkins job (git 'https://github.com/pninitd/devops_project.git')
+                // checkout from the url that defined in the jenkins job (git 'https://github.com/pninitd/devops_project_fourth_part.git')
 				checkout scm
 			}
 		}
@@ -17,9 +22,9 @@ pipeline {
 			steps {
 				script {
 					if (isUnix()) {
-						sh 'pip install flask werkzeug requests selenium pymysql -t ./'
+						sh 'pip install flask werkzeug requests pymysql -t ./'
 					} else {
-						bat 'pip install flask werkzeug requests selenium pymysql -t ./'
+						bat 'pip install flask werkzeug requests pymysql -t ./'
 					}
 				}
 			}
@@ -31,31 +36,10 @@ pipeline {
 				}
 			}
 		}
-		stage('run frontend server') {
-			steps {
-				script {
-					runPythonFileBackground('web_app.py')
-				}
-			}
-		}
 		stage('run backend testing') {
 			steps {
 				script {
 					runPythonFile('backend_testing.py test')
-				}
-			}
-		}
-		stage('run frontend testing') {
-			steps {
-				script {
-					runPythonFile('frontend_testing.py test')
-				}
-			}
-		}
-		stage('run combined testing.') {
-			steps {
-				script {
-					runPythonFile('combined_testing.py test')
 				}
 			}
 		}
@@ -66,9 +50,50 @@ pipeline {
 				}
 			}
 		}
+		stage('Build and push Docker image') {
+			steps {
+				script {
+                    dockerImage = docker.build registry + "devops_project:$BUILD_NUMBER"
+                    docker.withRegistry('', registryCredential) {
+                    dockerImage.push()
+				}
+			}
+		}
+		stage('Set image version') {
+			steps {
+				script {
+					sh "echo IMAGE_TAG=${BUILD_NUMBER} > .env"
+				}
+			}
+		}
+		stage('Start docker container') {
+			steps {
+				script {
+					sh "docker-compose up -d"
+				}
+			}
+		}
+		stage('Test container') {
+			steps {
+				script {
+					runPythonFile('docker_backend_testing.py')
+				}
+			}
+		}
+		stage('Clean docker environment') {
+			steps {
+				script {
+					sh "docker-compose down"
+					sh "docker image rm devops_project:$BUILD_NUMBER"
+				}
+			}
+		}
 	}
 	post {
-// 	Extra: send email in case of failure
+	    always {
+            sh "docker rmi $registry:$BUILD_NUMBER"
+        }
+        // 	Extra: send email in case of failure
 	    failure {
 	        mail body: "Jenkins-${JOB_NAME}-${BUILD_NUMBER} FAILED Check what is the issue: $env.JOB_URL",
 	        bcc: '', cc: '', from: 'Jenkins@gmail.com', replyTo: 'no-reply@gmail.com',

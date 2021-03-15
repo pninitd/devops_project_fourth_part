@@ -1,6 +1,6 @@
 version: '3'
 services:
   rest_app:
-    build: .
+    image: "devops_project:${IMAGE_TAG}"
     ports:
      - "5000:5000"
