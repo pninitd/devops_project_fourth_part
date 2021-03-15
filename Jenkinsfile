@@ -91,7 +91,9 @@ pipeline {
 	}
 	post {
 	    always {
-            sh "docker rmi $registry:$BUILD_NUMBER"
+	        script {
+                sh "docker rmi $registry:$BUILD_NUMBER"
+            }
         }
         // 	Extra: send email in case of failure
 	    failure {
