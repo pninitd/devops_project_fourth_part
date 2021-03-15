@@ -27,15 +27,6 @@ def stop_rest_app():
         print("Connection refused to rest_app service", e)
 
 
-def stop_web_app():
-    # Stop web app service
-    try:
-        requests.get('http://127.0.0.1:5001/stop_server')
-    except requests.exceptions.ConnectionError as e:
-        print("Connection refused to web_app service", e)
-
-
 if __name__ == "__main__":
     clean_test_user()
     stop_rest_app()
-    stop_web_app()
