@@ -1,6 +1,4 @@
 import requests
-import docker
-
 
 def test_docker():
     # test rest app is running from docker
