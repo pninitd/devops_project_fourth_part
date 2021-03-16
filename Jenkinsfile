@@ -81,18 +81,12 @@ pipeline {
 				}
 			}
 		}
-		stage('Clean docker environment') {
-			steps {
-				script {
-					sh "docker-compose down"
-// 					sh "docker image rm devops_project:$BUILD_NUMBER"
-				}
-			}
-		}
 	}
 	post {
 	    always {
 	        script {
+// 	        Clean docker environment
+	            sh "docker-compose down"
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
