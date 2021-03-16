@@ -4,7 +4,7 @@ import requests
 def test_docker():
     # test rest app is running from docker
     try:
-        res = requests.get('http://0.0.0.0:5000/users/1')
+        res = requests.get('http://127.0.0.1:5000/users/1')
         print('get user: ', res.json())
         assert res.ok
     except requests.exceptions.ConnectionError as e:
