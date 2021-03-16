@@ -97,11 +97,11 @@ pipeline {
             }
         }
         // 	Extra: send email in case of failure
-	    failure {
-	        mail body: "Jenkins-${JOB_NAME}-${BUILD_NUMBER} FAILED Check what is the issue: $env.JOB_URL",
-	        bcc: '', cc: '', from: 'Jenkins@gmail.com', replyTo: 'no-reply@gmail.com',
-	        subject: "Jenkins-${JOB_NAME}-${BUILD_NUMBER} FAILED", to: 'pninit.dvir@gmail.com'
-	    }
+// 	    failure {
+// 	        mail body: "Jenkins-${JOB_NAME}-${BUILD_NUMBER} FAILED Check what is the issue: $env.JOB_URL",
+// 	        bcc: '', cc: '', from: 'Jenkins@gmail.com', replyTo: 'no-reply@gmail.com',
+// 	        subject: "Jenkins-${JOB_NAME}-${BUILD_NUMBER} FAILED", to: 'pninit.dvir@gmail.com'
+// 	    }
 	}
 }
 
