@@ -16,7 +16,7 @@ def check_new_user_creation(user_id, user_name):
     success = False
     try:
         # create a new user
-        res = requests.post("http://127.0.0.1:5000/users/" + str(user_id), json={'user_name': user_name})
+        res = requests.post("http://localhost:5000/users/" + str(user_id), json={'user_name': user_name})
         print("insert new user: ", res.json())
         assert res.ok
         data = res.json()
@@ -35,7 +35,7 @@ def check_get_user(user_id, user_name):
     success = False
     try:
         # check results from get api
-        res = requests.get("http://127.0.0.1:5000/users/" + str(user_id))
+        res = requests.get("http://localhost:5000/users/" + str(user_id))
         print('get user: ', res.json())
         assert res.ok
         data = res.json()

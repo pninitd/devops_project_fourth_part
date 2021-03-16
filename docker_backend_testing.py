@@ -1,10 +1,11 @@
 import requests
+import docker
 
 
 def test_docker():
     # test rest app is running from docker
     try:
-        res = requests.get('http://127.0.0.1:5000/users/1')
+        res = requests.get('http://localhost:5000/users/1')
         print('get user: ', res.json())
     except requests.exceptions.ConnectionError as e:
         print("Connection refused to rest_app service from docker", e)

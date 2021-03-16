@@ -11,7 +11,7 @@ import signal
 app = Flask(__name__)
 
 
-# http://127.0.0.1:5000/users/<user_id>
+# http://localhost:5000/users/<user_id>
 @app.route('/users/<user_id>', methods=['GET', 'POST', 'DELETE', 'PUT'])
 def user(user_id):
     if request.method == 'GET':
@@ -131,4 +131,4 @@ def stop_server():
         return 'Rest app Server stopped'
 
 
-app.run(host='127.0.0.1', debug=True, port=5000)
+app.run(host='0.0.0.0', debug=True, port=5000)

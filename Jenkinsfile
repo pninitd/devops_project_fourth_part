@@ -85,7 +85,6 @@ pipeline {
 	post {
 	    always {
 	        script {
-// 	        Clean docker environment
 	            sh "docker-compose down"
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
