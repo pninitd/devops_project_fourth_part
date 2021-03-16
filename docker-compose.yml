@@ -1,6 +1,6 @@
 version: '3'
 services:
   rest_app:
-    image: "devops_project:${IMAGE_TAG}"
+    image: "pninit/devops_project_fourth_part:${IMAGE_TAG}"
     ports:
      - "5000:5000"

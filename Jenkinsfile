@@ -53,9 +53,10 @@ pipeline {
 		stage('Build and push Docker image') {
 			steps {
 				script {
-                    dockerImage = docker.build registry + "devops_project:$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
                     docker.withRegistry('', registryCredential) {
-                    dockerImage.push()
+                        dockerImage.push()
+                    }
 				}
 			}
 		}
@@ -84,7 +85,7 @@ pipeline {
 			steps {
 				script {
 					sh "docker-compose down"
-					sh "docker image rm devops_project:$BUILD_NUMBER"
+// 					sh "docker image rm devops_project:$BUILD_NUMBER"
 				}
 			}
 		}
