@@ -92,7 +92,7 @@ pipeline {
 		stage('Deploy HELM chart') {
 			steps {
 				script {
-					sh 'helm upgrade --install rest_app_release -–set image.version=$registry:${BUILD_NUMBER}'
+					sh 'helm upgrade --install rest_app_release --set image.version=$registry:${BUILD_NUMBER}'
 // 					    helm upgrade --install mychart mychart-0.1.0.tgz --set replicaCount=3
 				}
 			}
