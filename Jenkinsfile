@@ -81,14 +81,45 @@ pipeline {
 				}
 			}
 		}
+		stage('Clean compose environment') {
+			steps {
+				script {
+					sh "docker-compose down"
+                    sh "docker rmi $registry:$BUILD_NUMBER"
+				}
+			}
+		}
+		stage('Deploy HELM chart') {
+			steps {
+				script {
+					sh 'helm upgrade --install rest_app_release -–set image.version=$registry:${BUILD_NUMBER}'
+// 					    helm upgrade --install mychart mychart-0.1.0.tgz --set replicaCount=3
+				}
+			}
+		}
+		stage('Save service URL') {
+			steps {
+				script {
+					sh 'minikube service rest_app-service -–url > k8s_url.txt'
+				}
+			}
+		}
+		stage('Test k8s services') {
+			steps {
+				script {
+					runPythonFile('K8S_backend_testing.py')
+				}
+			}
+		}
+		stage('Clean k8s environment') {
+			steps {
+				script {
+					sh "HELM delete"
+				}
+			}
+		}
 	}
 	post {
-	    always {
-	        script {
-	            sh "docker-compose down"
-                sh "docker rmi $registry:$BUILD_NUMBER"
-            }
-        }
         // 	Extra: send email in case of failure
 // 	    failure {
 // 	        mail body: "Jenkins-${JOB_NAME}-${BUILD_NUMBER} FAILED Check what is the issue: $env.JOB_URL",
