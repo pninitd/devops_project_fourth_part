@@ -1,11 +1,13 @@
 import requests
+import re
 
 
 def geturl():
     url = ''
     try:
         with open('k8s_url.txt', 'r', encoding='utf-8') as file:
-            url = file.read()
+            text = file.read()
+            url = re.search("(?P<url>https?://[^\s]+)", text).group("url")
             print(url)
     except IOError as e:
         print("Could not read the file:", e)

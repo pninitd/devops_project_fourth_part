@@ -92,15 +92,14 @@ pipeline {
 		stage('Deploy HELM chart') {
 			steps {
 				script {
-					sh 'helm upgrade --install rest_app_release --set image.version=$registry:${BUILD_NUMBER}'
-// 					    helm upgrade --install mychart mychart-0.1.0.tgz --set replicaCount=3
+					sh "helm install release helm/ --set image.version=$registry:${BUILD_NUMBER}"
 				}
 			}
 		}
 		stage('Save service URL') {
 			steps {
 				script {
-					sh 'minikube service rest_app-service -–url > k8s_url.txt'
+					sh 'minikube service lbservice --url > k8s_url.txt &'
 				}
 			}
 		}
@@ -114,7 +113,7 @@ pipeline {
 		stage('Clean k8s environment') {
 			steps {
 				script {
-					sh "HELM delete"
+					sh "helm delete release"
 				}
 			}
 		}
