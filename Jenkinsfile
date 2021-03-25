@@ -74,6 +74,13 @@ pipeline {
 				}
 			}
 		}
+		stage('Wait 20s ...') {
+            steps {
+                script {
+                    sleep()
+                }
+            }
+        }
 		stage('Test container') {
 			steps {
 				script {
@@ -96,6 +103,13 @@ pipeline {
 				}
 			}
 		}
+		stage('Wait 20s ...') {
+            steps {
+                script {
+                    sleep()
+                }
+            }
+        }
 		stage('Save service URL') {
 			steps {
 				script {
@@ -103,6 +117,13 @@ pipeline {
 				}
 			}
 		}
+		stage('Wait 20s ...') {
+            steps {
+                script {
+                    sleep()
+                }
+            }
+        }
 		stage('Test k8s services') {
 			steps {
 				script {
@@ -155,4 +176,14 @@ def runPythonFileBackground(pyfilename){
 	catch (Throwable e) {
 		echo "Caught in runPythonFileBackground for ${pyfilename} ${e.toString()}"
 	}
+}
+
+
+def sleep(){
+// sleep 20 secounds
+    if (isUnix()) {
+        sh "sleep 20"
+    } else {
+        bat "sleep 20"
+    }
 }
