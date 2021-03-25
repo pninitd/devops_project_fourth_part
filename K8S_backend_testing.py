@@ -23,6 +23,7 @@ def test_k8s():
         url = geturl()
         if url is None or url == '':
             url = 'http://host.docker.internal:5000'
+        print("k8s url: " + url)
         res = requests.get(url + '/users/1')
         print('get user: ', res.json())
     except requests.exceptions.ConnectionError as e:
