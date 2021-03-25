@@ -77,7 +77,7 @@ pipeline {
 		stage('Wait 20s ...') {
             steps {
                 script {
-                    sleep()
+                    sleep 20
                 }
             }
         }
@@ -106,7 +106,7 @@ pipeline {
 		stage('Wait 20s ...') {
             steps {
                 script {
-                    sleep()
+                    sleep 20
                 }
             }
         }
@@ -120,7 +120,7 @@ pipeline {
 		stage('Wait 20s ...') {
             steps {
                 script {
-                    sleep()
+                    sleep 20
                 }
             }
         }
@@ -176,14 +176,4 @@ def runPythonFileBackground(pyfilename){
 	catch (Throwable e) {
 		echo "Caught in runPythonFileBackground for ${pyfilename} ${e.toString()}"
 	}
-}
-
-
-def sleep(){
-// sleep 20 secounds
-    if (isUnix()) {
-        sh "sleep 20"
-    } else {
-        bat "sleep 20"
-    }
 }
