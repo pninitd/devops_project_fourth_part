@@ -103,7 +103,7 @@ pipeline {
 				}
 			}
 		}
-		stage('Wait 20s ...') {
+		stage('Wait for helm ...') {
             steps {
                 script {
                     sleep 20
@@ -117,7 +117,7 @@ pipeline {
 				}
 			}
 		}
-		stage('Wait 20s ...') {
+		stage('Wait for url ...') {
             steps {
                 script {
                     sleep 20
