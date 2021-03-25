@@ -74,6 +74,13 @@ pipeline {
 				}
 			}
 		}
+		stage('Wait 20s ...') {
+            steps {
+                script {
+                    sleep 20
+                }
+            }
+        }
 		stage('Test container') {
 			steps {
 				script {
@@ -81,21 +88,65 @@ pipeline {
 				}
 			}
 		}
-	}
-	post {
-	    always {
-	        script {
-	            sh "docker-compose down"
-                sh "docker rmi $registry:$BUILD_NUMBER"
+		stage('Clean compose environment') {
+			steps {
+				script {
+					sh "docker-compose down"
+                    sh "docker rmi $registry:$BUILD_NUMBER"
+				}
+			}
+		}
+		stage('Deploy HELM chart') {
+			steps {
+				script {
+					sh "helm install release helm/ --set image.version=$registry:${BUILD_NUMBER}"
+				}
+			}
+		}
+		stage('Wait for helm ...') {
+            steps {
+                script {
+                    sleep 20
+                }
             }
         }
+		stage('Save service URL') {
+			steps {
+				script {
+					sh 'minikube service lbservice --url > k8s_url.txt &'
+				}
+			}
+		}
+		stage('Wait for url ...') {
+            steps {
+                script {
+                    sleep 20
+                }
+            }
+        }
+		stage('Test k8s services') {
+			steps {
+				script {
+					runPythonFile('K8S_backend_testing.py')
+				}
+			}
+		}
+		stage('Clean k8s environment') {
+			steps {
+				script {
+					sh "helm delete release"
+				}
+			}
+		}
+	}
+// 	post {
         // 	Extra: send email in case of failure
 // 	    failure {
 // 	        mail body: "Jenkins-${JOB_NAME}-${BUILD_NUMBER} FAILED Check what is the issue: $env.JOB_URL",
 // 	        bcc: '', cc: '', from: 'Jenkins@gmail.com', replyTo: 'no-reply@gmail.com',
 // 	        subject: "Jenkins-${JOB_NAME}-${BUILD_NUMBER} FAILED", to: 'pninit.dvir@gmail.com'
 // 	    }
-	}
+// 	}
 }
 
 def runPythonFile(pyfilename){
